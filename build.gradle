@@ -49,6 +49,7 @@ neoForge {
 
     runs {
         client {
+            devLogin = true
             client()
             systemProperty 'mixin.debug.export', 'true'
             systemProperty 'neoforge.earlyWindowControl', 'false'

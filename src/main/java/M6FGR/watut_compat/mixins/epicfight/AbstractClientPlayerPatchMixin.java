@@ -15,8 +15,9 @@ import yesman.epicfight.client.world.capabilites.entitypatch.player.AbstractClie
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 
 @Mixin(value = AbstractClientPlayerPatch.class, remap = false)
-public abstract class AbstractClientPlayerPatchMixin extends PlayerPatch<AbstractClientPlayer> {
-    public AbstractClientPlayerPatchMixin(AbstractClientPlayer entity) {
+
+public abstract class AbstractClientPlayerPatchMixin<T extends AbstractClientPlayer> extends PlayerPatch<T> {
+    public AbstractClientPlayerPatchMixin(T entity) {
         super(entity);
     }
 
@@ -27,7 +28,7 @@ public abstract class AbstractClientPlayerPatchMixin extends PlayerPatch<Abstrac
     )
 
     private void injectActions(boolean considerInaction, CallbackInfo ci) {
-        PlayerStatus status = WatutMod.getPlayerStatusManagerServer().getStatus(this.original);
+        PlayerStatus status = WatutMod.getPlayerStatusManagerClient().getStatus(this.original);
         PlayerChatState chatState = status.getPlayerChatState();
         PlayerGuiState guiState = status.getPlayerGuiState();
         if (chatState == PlayerChatState.CHAT_TYPING) {
