@@ -12,6 +12,7 @@ import yesman.epicfight.model.armature.HumanoidArmature;
 public class WatutAnimations {
 
     public static AnimationAccessor<InteractionAnimation> FOCUSED_GENERAL;
+    public static AnimationAccessor<InteractionAnimation> SNORE_GENERAL;
     public static AnimationAccessor<InteractionAnimation> CHAT_TYPING;
 
 
@@ -27,6 +28,7 @@ public class WatutAnimations {
         CHAT_TYPING = builder.nextAccessor(livingAnimation("chat_typing"), accessor ->
                 new InteractionAnimation(0.05F, accessor, biped)
         );
+
     }
 
 

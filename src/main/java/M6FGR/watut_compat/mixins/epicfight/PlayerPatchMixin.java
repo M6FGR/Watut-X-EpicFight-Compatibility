@@ -7,7 +7,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import yesman.epicfight.api.animation.Animator;
-import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 
 @Mixin(value = PlayerPatch.class, remap = false)
@@ -23,5 +22,6 @@ public class PlayerPatchMixin {
     public void injectInteractionAnimations(Animator animator, CallbackInfo ci) {
         animator.addLivingAnimation(WatutLivingMotions.CHAT_TYPING, WatutAnimations.CHAT_TYPING);
         animator.addLivingAnimation(WatutLivingMotions.FOCUSED_GENERAL, WatutAnimations.FOCUSED_GENERAL);
+        animator.addLivingAnimation(WatutLivingMotions.IDLING, WatutAnimations.CHAT_TYPING);
     }
 }

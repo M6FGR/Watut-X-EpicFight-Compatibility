@@ -1,17 +1,16 @@
 package M6FGR.watut_compat.mixins.epicfight;
 
 import M6FGR.watut_compat.api.animation.WatutLivingMotions;
+import com.corosus.watut.PlayerStatus;
 import com.corosus.watut.PlayerStatus.PlayerChatState;
 import com.corosus.watut.PlayerStatus.PlayerGuiState;
 import com.corosus.watut.WatutMod;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.world.inventory.InventoryMenu;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import yesman.epicfight.api.animation.LivingMotion;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.AbstractClientPlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 
@@ -21,8 +20,6 @@ public abstract class AbstractClientPlayerPatchMixin extends PlayerPatch<Abstrac
         super(entity);
     }
 
-
-
     @Inject(
             method = "updateMotion",
             at = @At("TAIL"),
@@ -30,13 +27,15 @@ public abstract class AbstractClientPlayerPatchMixin extends PlayerPatch<Abstrac
     )
 
     private void injectActions(boolean considerInaction, CallbackInfo ci) {
-        PlayerChatState chatState = WatutMod.getPlayerStatusManagerServer().getStatus(this.original).getPlayerChatState();
-        PlayerGuiState guiState = WatutMod.getPlayerStatusManagerServer().getStatus(this.original).getPlayerGuiState();
+        PlayerStatus status = WatutMod.getPlayerStatusManagerServer().getStatus(this.original);
+        PlayerChatState chatState = status.getPlayerChatState();
+        PlayerGuiState guiState = status.getPlayerGuiState();
         if (chatState == PlayerChatState.CHAT_TYPING) {
             this.currentLivingMotion = WatutLivingMotions.CHAT_TYPING;
         } else if (chatState == PlayerChatState.CHAT_FOCUSED) {
             this.currentLivingMotion = WatutLivingMotions.FOCUSED_GENERAL;
         }
+
         if (this.watutCompat$isAnyGuiMatching(guiState,
                 PlayerGuiState.INVENTORY,
                 PlayerGuiState.ANVIL,
@@ -61,6 +60,8 @@ public abstract class AbstractClientPlayerPatchMixin extends PlayerPatch<Abstrac
         )) {
             this.currentLivingMotion = WatutLivingMotions.FOCUSED_GENERAL;
         }
+
+
     }
 
 
