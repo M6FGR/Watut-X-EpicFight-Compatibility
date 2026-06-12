@@ -1,6 +1,7 @@
 package M6FGR.watut_compat.mixins.epicfight;
 
 import M6FGR.watut_compat.api.animation.WatutLivingMotions;
+import com.corosus.watut.PlayerStatus;
 import com.corosus.watut.PlayerStatus.PlayerChatState;
 import com.corosus.watut.PlayerStatus.PlayerGuiState;
 import com.corosus.watut.WatutMod;
@@ -29,8 +30,9 @@ public abstract class AbstractClientPlayerPatchMixin extends PlayerPatch<Abstrac
     )
 
     private void injectActions(boolean considerInaction, CallbackInfo ci) {
-        PlayerChatState chatState = WatutMod.getPlayerStatusManagerServer().getStatus(this.original).getPlayerChatState();
-        PlayerGuiState guiState = WatutMod.getPlayerStatusManagerServer().getStatus(this.original).getPlayerGuiState();
+        PlayerStatus status = WatutMod.getPlayerStatusManagerClient().getStatus(this.original);
+        PlayerChatState chatState = status.getPlayerChatState();
+        PlayerGuiState guiState = status.getPlayerGuiState();
         if (chatState == PlayerChatState.CHAT_TYPING) {
             this.currentLivingMotion = WatutLivingMotions.CHAT_TYPING;
         } else if (chatState == PlayerChatState.CHAT_FOCUSED) {

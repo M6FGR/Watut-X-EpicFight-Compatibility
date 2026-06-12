@@ -5,10 +5,10 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "watut_compat.refmap.json",
   "mixins": [
-    "epicfight.AbstractClientPlayerPatchMixin",
     "epicfight.PlayerPatchMixin"
   ],
   "client": [
+    "epicfight.AbstractClientPlayerPatchMixin"
   ],
   "injectors": {
     "defaultRequire": 1
