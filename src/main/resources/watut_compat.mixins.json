@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "M6FGR.watut_compat.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "epicfight.AbstractClientPlayerPatchMixin",
+    "epicfight.PlayerPatchMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
