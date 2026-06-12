@@ -137,8 +137,8 @@ repositories {
 // See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
 
 mixin {
-    add sourceSets.main, "dualaxes.refmap.json"
-    config 'dualaxes.mixins.json'
+    add sourceSets.main, "${mod_id}.refmap.json"
+    config "${mod_id}.mixins.json"
 }
 
 dependencies {

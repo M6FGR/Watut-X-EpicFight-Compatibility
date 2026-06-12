@@ -22,7 +22,6 @@ public abstract class AbstractClientPlayerPatchMixin extends PlayerPatch<Abstrac
     }
 
 
-
     @Inject(
             method = "updateMotion",
             at = @At("TAIL"),

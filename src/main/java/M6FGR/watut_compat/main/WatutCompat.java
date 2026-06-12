@@ -11,7 +11,6 @@ public class WatutCompat {
     public WatutCompat(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
         modEventBus.addListener(WatutAnimations::registerAnimations);
-
     }
 
 }
