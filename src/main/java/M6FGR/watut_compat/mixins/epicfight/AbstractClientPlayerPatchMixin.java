@@ -5,17 +5,20 @@ import com.corosus.watut.PlayerStatus;
 import com.corosus.watut.PlayerStatus.PlayerChatState;
 import com.corosus.watut.PlayerStatus.PlayerGuiState;
 import com.corosus.watut.WatutMod;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import yesman.epicfight.api.animation.LivingMotion;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.AbstractClientPlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 
-@Mixin(value = AbstractClientPlayerPatch.class, remap = false)
-
+@Mixin(value = AbstractClientPlayerPatch.class, remap = false, priority = 1001)
+// TO-DO: Fix the issue players can't attack after the composite motions are updated
 public abstract class AbstractClientPlayerPatchMixin<T extends AbstractClientPlayer> extends PlayerPatch<T> {
     public AbstractClientPlayerPatchMixin(T entity) {
         super(entity);
@@ -23,57 +26,48 @@ public abstract class AbstractClientPlayerPatchMixin<T extends AbstractClientPla
 
     @Inject(
             method = "updateMotion",
-            at = @At("TAIL"),
+            at = @At(value = "INVOKE", target = "Lyesman/epicfight/api/event/EventHook;postWithListener(Lyesman/epicfight/api/event/Event;Lyesman/epicfight/api/event/EntityEventListener;)Lyesman/epicfight/api/event/Event;"),
             remap = false
     )
-
     private void injectActions(boolean considerInaction, CallbackInfo ci) {
         PlayerStatus status = WatutMod.getPlayerStatusManagerClient().getStatus(this.original);
         PlayerChatState chatState = status.getPlayerChatState();
         PlayerGuiState guiState = status.getPlayerGuiState();
+        // chat motions
         if (chatState == PlayerChatState.CHAT_TYPING) {
-            this.currentLivingMotion = WatutLivingMotions.CHAT_TYPING;
+            this.setLiving(WatutLivingMotions.CHAT_TYPING);
         } else if (chatState == PlayerChatState.CHAT_FOCUSED) {
-            this.currentLivingMotion = WatutLivingMotions.FOCUSED_GENERAL;
+            this.setLiving(WatutLivingMotions.CHAT_FOCUSED);
         }
+        // gui motions
 
-        if (this.watutCompat$isAnyGuiMatching(guiState,
-                PlayerGuiState.INVENTORY,
-                PlayerGuiState.ANVIL,
-                PlayerGuiState.CRAFTING,
-                PlayerGuiState.ESCAPE,
-                PlayerGuiState.EDIT_SIGN,
-                PlayerGuiState.EDIT_BOOK,
-                PlayerGuiState.CHEST,
-                PlayerGuiState.ENCHANTING_TABLE,
-                PlayerGuiState.ANVIL,
-                PlayerGuiState.BEACON,
-                PlayerGuiState.BREWING_STAND,
-                PlayerGuiState.DISPENSER,
-                PlayerGuiState.FURNACE,
-                PlayerGuiState.GRINDSTONE,
-                PlayerGuiState.HOPPER,
-                PlayerGuiState.HORSE,
-                PlayerGuiState.LOOM,
-                PlayerGuiState.VILLAGER,
-                PlayerGuiState.COMMAND_BLOCK,
-                PlayerGuiState.MISC
-        )) {
-            this.currentLivingMotion = WatutLivingMotions.FOCUSED_GENERAL;
+        // pressing only runs if there was another player in the server!
+        if (status.isPressing()) {
+            this.setComposite(WatutLivingMotions.PRESSING);
+            // any type of pointing states (Anvil, Crafting, etc.)
+        } else if (guiState != PlayerStatus.PlayerGuiState.NONE && PlayerStatus.PlayerGuiState.isPointingGui(guiState)) {
+            this.setLiving(WatutLivingMotions.BROWSING);
+            // any type of typing states, such as typing on a sign, chat
+        } else if (PlayerGuiState.isTypingGui(guiState) && chatState != PlayerChatState.CHAT_TYPING && chatState != PlayerChatState.CHAT_FOCUSED) {
+            this.setComposite(WatutLivingMotions.TYPING);
+        } else if (status.isIdle()) {
+            this.setLiving(WatutLivingMotions.IDLING);
         }
 
 
+        // in-game debug
+        // Minecraft.getInstance().gui.setOverlayMessage(Component.literal("Current motions are: " + this.currentLivingMotion + " and " + this.currentCompositeMotion), false);
     }
 
+    // helping methods
+    @Unique
+    private void setComposite(LivingMotion motion) {
+        this.currentCompositeMotion = motion;
+    }
 
     @Unique
-    private boolean watutCompat$isAnyGuiMatching(PlayerGuiState originalState, PlayerGuiState... states) {
-        for (PlayerGuiState playerGuiState : states) {
-            if (originalState == playerGuiState) {
-                return true;
-            }
-        }
-        return false;
+    private void setLiving(LivingMotion motion) {
+        this.currentLivingMotion = motion;
     }
 
 

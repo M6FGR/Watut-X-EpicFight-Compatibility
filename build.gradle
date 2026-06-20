@@ -49,10 +49,8 @@ neoForge {
 
     runs {
         client {
-            devLogin = true
+            devLogin = false
             client()
-            systemProperty 'mixin.debug.export', 'true'
-            systemProperty 'neoforge.earlyWindowControl', 'false'
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 

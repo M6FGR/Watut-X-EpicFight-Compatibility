@@ -4,7 +4,7 @@ pluginManagement {
         gradlePluginPortal()
         maven { url = 'https://maven.neoforged.net/releases' }
     }
-    rootProject.name = "WATUT Compat"
+    rootProject.name = "WATUT Compat NeoForge"
 }
 
 
