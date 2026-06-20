@@ -22,6 +22,8 @@ public class PlayerPatchMixin {
 
     public void injectInteractionAnimations(Animator animator, CallbackInfo ci) {
         animator.addLivingAnimation(WatutLivingMotions.CHAT_TYPING, WatutAnimations.CHAT_TYPING);
-        animator.addLivingAnimation(WatutLivingMotions.FOCUSED_GENERAL, WatutAnimations.FOCUSED_GENERAL);
+        animator.addLivingAnimation(WatutLivingMotions.BROWSING, WatutAnimations.FOCUSED_GENERAL);
+        animator.addLivingAnimation(WatutLivingMotions.PRESSING, WatutAnimations.PRESS);
+        animator.addLivingAnimation(WatutLivingMotions.IDLING, WatutAnimations.IDLE_STATIC);
     }
 }

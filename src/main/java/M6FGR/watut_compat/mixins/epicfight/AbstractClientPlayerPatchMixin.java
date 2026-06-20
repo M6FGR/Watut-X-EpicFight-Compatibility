@@ -5,7 +5,9 @@ import com.corosus.watut.PlayerStatus;
 import com.corosus.watut.PlayerStatus.PlayerChatState;
 import com.corosus.watut.PlayerStatus.PlayerGuiState;
 import com.corosus.watut.WatutMod;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.InventoryMenu;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -22,10 +24,9 @@ public abstract class AbstractClientPlayerPatchMixin extends PlayerPatch<Abstrac
         super();
     }
 
-
     @Inject(
             method = "updateMotion",
-            at = @At("TAIL"),
+            at = @At(value = "INVOKE", target = "Lnet/minecraftforge/eventbus/api/IEventBus;post(Lnet/minecraftforge/eventbus/api/Event;)Z"),
             remap = false
     )
 
@@ -33,46 +34,33 @@ public abstract class AbstractClientPlayerPatchMixin extends PlayerPatch<Abstrac
         PlayerStatus status = WatutMod.getPlayerStatusManagerClient().getStatus(this.original);
         PlayerChatState chatState = status.getPlayerChatState();
         PlayerGuiState guiState = status.getPlayerGuiState();
+        // chat motions
         if (chatState == PlayerChatState.CHAT_TYPING) {
-            this.currentLivingMotion = WatutLivingMotions.CHAT_TYPING;
+            this.setLiving(WatutLivingMotions.CHAT_TYPING);
         } else if (chatState == PlayerChatState.CHAT_FOCUSED) {
-            this.currentLivingMotion = WatutLivingMotions.FOCUSED_GENERAL;
+            this.setLiving(WatutLivingMotions.BROWSING);
         }
-        if (this.watutCompat$isAnyGuiMatching(guiState,
-                PlayerGuiState.INVENTORY,
-                PlayerGuiState.ANVIL,
-                PlayerGuiState.CRAFTING,
-                PlayerGuiState.ESCAPE,
-                PlayerGuiState.EDIT_SIGN,
-                PlayerGuiState.EDIT_BOOK,
-                PlayerGuiState.CHEST,
-                PlayerGuiState.ENCHANTING_TABLE,
-                PlayerGuiState.ANVIL,
-                PlayerGuiState.BEACON,
-                PlayerGuiState.BREWING_STAND,
-                PlayerGuiState.DISPENSER,
-                PlayerGuiState.FURNACE,
-                PlayerGuiState.GRINDSTONE,
-                PlayerGuiState.HOPPER,
-                PlayerGuiState.HORSE,
-                PlayerGuiState.LOOM,
-                PlayerGuiState.VILLAGER,
-                PlayerGuiState.COMMAND_BLOCK,
-                PlayerGuiState.MISC
-        )) {
-            this.currentLivingMotion = WatutLivingMotions.FOCUSED_GENERAL;
+        // gui motions
+
+        // pressing only runs if there was another player in the server!
+        if (status.isPressing()) {
+            this.setComposite(WatutLivingMotions.PRESSING);
+        } else if (guiState != PlayerStatus.PlayerGuiState.NONE && PlayerStatus.PlayerGuiState.isPointingGui(guiState)) {
+            this.setLiving(WatutLivingMotions.BROWSING);
+        } else if (status.isIdle()) {
+            this.setLiving(WatutLivingMotions.IDLING);
         }
+        // in-game debug
+        Minecraft.getInstance().gui.setOverlayMessage(Component.literal("Current motions are: " + this.currentLivingMotion + " and " + this.currentCompositeMotion), false);
     }
 
-
     @Unique
-    private boolean watutCompat$isAnyGuiMatching(PlayerGuiState originalState, PlayerGuiState... states) {
-        for (PlayerGuiState playerGuiState : states) {
-            if (originalState == playerGuiState) {
-                return true;
-            }
-        }
-        return false;
+    private void setComposite(LivingMotion motion) {
+        this.currentCompositeMotion = motion;
+    }
+
+    private void setLiving(LivingMotion motion) {
+        this.currentLivingMotion = motion;
     }
 
 
