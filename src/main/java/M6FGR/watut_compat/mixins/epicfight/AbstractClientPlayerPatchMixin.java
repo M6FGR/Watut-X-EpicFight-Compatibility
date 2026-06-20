@@ -51,7 +51,7 @@ public abstract class AbstractClientPlayerPatchMixin extends PlayerPatch<Abstrac
             this.setLiving(WatutLivingMotions.IDLING);
         }
         // in-game debug
-        Minecraft.getInstance().gui.setOverlayMessage(Component.literal("Current motions are: " + this.currentLivingMotion + " and " + this.currentCompositeMotion), false);
+        // Minecraft.getInstance().gui.setOverlayMessage(Component.literal("Current motions are: " + this.currentLivingMotion + " and " + this.currentCompositeMotion), false);
     }
 
     @Unique

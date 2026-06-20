@@ -60,8 +60,6 @@ public class WatutAnimations {
         public static AnimationEvent.E1<AnimationAccessor<? extends StaticAnimation>> PLAY_ANIMATION = (entityPatch, accessor, params) -> {
             entityPatch.playAnimationSynchronized(params.first(), 0.0F);
         };
-
-
     }
 
     public static class AnimationModifiers {
