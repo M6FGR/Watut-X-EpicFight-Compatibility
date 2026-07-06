@@ -25,7 +25,6 @@ import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
 public class InteractionAnimation extends StaticAnimation {
-    private static final JointMaskEntry ROOT_UPPER_JOINTS = JointMaskEntry.builder().defaultMask(JointMaskEntry.BIPED_UPPER_JOINTS_WITH_ROOT).create();
     public InteractionAnimation(float transitionTime, AnimationAccessor<? extends InteractionAnimation> animation, AssetAccessor<? extends Armature> armature) {
         this(transitionTime, true, false, animation, armature);
     }
@@ -37,14 +36,9 @@ public class InteractionAnimation extends StaticAnimation {
 
     public InteractionAnimation(float transitionTime, boolean repeatable, boolean rightHandModify, AnimationAccessor<? extends InteractionAnimation> animation, AssetAccessor<? extends Armature> armature) {
         super(transitionTime, repeatable, animation, armature);
-        // to make the right arm and the head follow the cursor while a widget is open
         if (rightHandModify) this.addProperty(StaticAnimationProperty.POSE_MODIFIER, AnimationModifiers.LOOK_AT_CAMERA_DIRECTION);
-
-        // locking the head from rotating?
         this.addProperty(InteractionAnimationProperty.FOLLOW_ENTITY_LOOK, false);
-        // to override all animations
-        this.addProperty(ClientAnimationProperties.PRIORITY, Priority.HIGHEST);
-        // settings tool on the back
+        this.addProperty(ClientAnimationProperties.PRIORITY, Priority.MIDDLE);
         this.addProperty(StaticAnimationProperty.ON_ITEM_CHANGE_EVENT,
                 SimpleEvent.create(Animations.ReusableSources.SET_TOOLS_BACK_WHEN_ITEM_CHANGED, Side.CLIENT));
         this.addEvents(StaticAnimationProperty.ON_BEGIN_EVENTS,

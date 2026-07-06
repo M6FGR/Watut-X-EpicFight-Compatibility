@@ -49,7 +49,7 @@ neoForge {
 
     runs {
         client {
-            devLogin = false
+            devLogin = true
             client()
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }

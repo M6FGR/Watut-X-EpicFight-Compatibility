@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import yesman.epicfight.api.animation.LivingMotion;
+import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.AbstractClientPlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 
@@ -33,23 +34,23 @@ public abstract class AbstractClientPlayerPatchMixin<T extends AbstractClientPla
         PlayerStatus status = WatutMod.getPlayerStatusManagerClient().getStatus(this.original);
         PlayerChatState chatState = status.getPlayerChatState();
         PlayerGuiState guiState = status.getPlayerGuiState();
+        // we stop if the motion was SLEEP, so it doesn't play any of these while the player is in bed
+        if (this.currentLivingMotion == LivingMotions.SLEEP) return;
         // chat motions
         if (chatState == PlayerChatState.CHAT_TYPING) {
             this.setLiving(WatutLivingMotions.CHAT_TYPING);
         } else if (chatState == PlayerChatState.CHAT_FOCUSED) {
             this.setLiving(WatutLivingMotions.CHAT_FOCUSED);
         }
-        // gui motions
-
         // pressing only runs if there was another player in the server!
         if (status.isPressing()) {
-            this.setComposite(WatutLivingMotions.PRESSING);
+            this.setLiving(WatutLivingMotions.PRESSING);
             // any type of pointing states (Anvil, Crafting, etc.)
         } else if (guiState != PlayerStatus.PlayerGuiState.NONE && PlayerStatus.PlayerGuiState.isPointingGui(guiState)) {
             this.setLiving(WatutLivingMotions.BROWSING);
             // any type of typing states, such as typing on a sign, chat
         } else if (PlayerGuiState.isTypingGui(guiState) && chatState != PlayerChatState.CHAT_TYPING && chatState != PlayerChatState.CHAT_FOCUSED) {
-            this.setComposite(WatutLivingMotions.TYPING);
+            this.setLiving(WatutLivingMotions.TYPING);
         } else if (status.isIdle()) {
             this.setLiving(WatutLivingMotions.IDLING);
         }

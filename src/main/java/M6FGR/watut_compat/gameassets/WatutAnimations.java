@@ -4,7 +4,6 @@ import M6FGR.watut_compat.api.animation.InteractionAnimationProperty;
 import M6FGR.watut_compat.api.animation.types.InteractionAnimation;
 import M6FGR.watut_compat.main.WatutCompat;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 import yesman.epicfight.api.animation.AnimationManager.AnimationBuilder;
 import yesman.epicfight.api.animation.AnimationManager.AnimationRegistryEvent;
@@ -19,18 +18,11 @@ import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimation
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.client.animation.Layer.Priority;
 import yesman.epicfight.api.client.animation.property.ClientAnimationProperties;
-import yesman.epicfight.api.utils.math.MathUtils;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.QuaternionUtils;
-import yesman.epicfight.api.utils.math.Vec3f;
-import yesman.epicfight.gameasset.Animations;
-import yesman.epicfight.gameasset.Animations.ReusableSources;
 import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.gameasset.Armatures.ArmatureAccessor;
 import yesman.epicfight.model.armature.HumanoidArmature;
-import yesman.epicfight.registry.entries.EpicFightItemCapabilityPresets;
-import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
-import yesman.epicfight.world.capabilities.item.WeaponCapabilityPresets;
 
 public class WatutAnimations {
 
@@ -42,6 +34,7 @@ public class WatutAnimations {
 
     public static void registerAnimations(AnimationRegistryEvent event) {
         event.newBuilder(WatutCompat.MODID, WatutAnimations::build);
+        WatutCompat.LOGGER.info("Registered Watut Compat Animations");
     }
 
     private static void build(AnimationBuilder builder) {
@@ -85,7 +78,6 @@ public class WatutAnimations {
         };
 
         // copied from yesman.epicfight.gameasset.Animations#SPYGLASS_USE PoseModifier
-
         public static final AnimationProperty.PoseModifier LOOK_AT_CAMERA_DIRECTION = (self, pose, entitypatch, time, ticks) -> {
             if (entitypatch.isFirstPerson()) {
                 pose.disableAllJoints();
