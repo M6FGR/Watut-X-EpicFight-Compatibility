@@ -2,24 +2,16 @@ package M6FGR.watut_compat.api.animation.types;
 
 import M6FGR.watut_compat.api.animation.InteractionAnimationProperty;
 import M6FGR.watut_compat.gameassets.WatutAnimations.AnimationModifiers;
-import M6FGR.watut_compat.gameassets.WatutAnimations.ReusableEvents;
-import com.corosus.watut.PlayerStatus;
-import com.corosus.watut.PlayerStatusManager;
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
-import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.property.AnimationEvent.Side;
 import yesman.epicfight.api.animation.property.AnimationEvent.SimpleEvent;
-import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimationProperty;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
-import yesman.epicfight.api.client.animation.Layer.LayerType;
 import yesman.epicfight.api.client.animation.Layer.Priority;
 import yesman.epicfight.api.client.animation.property.ClientAnimationProperties;
-import yesman.epicfight.api.client.animation.property.JointMaskEntry;
-import yesman.epicfight.api.client.input.PlayerInputState;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -42,7 +34,7 @@ public class InteractionAnimation extends StaticAnimation {
         // locking the head from rotating?
         this.addProperty(InteractionAnimationProperty.FOLLOW_ENTITY_LOOK, false);
         // to override all animations
-        this.addProperty(ClientAnimationProperties.PRIORITY, Priority.HIGHEST);
+        this.addProperty(ClientAnimationProperties.PRIORITY, Priority.MIDDLE);
         // settings tool on the back
         this.addProperty(StaticAnimationProperty.ON_ITEM_CHANGE_EVENT,
                 SimpleEvent.create(Animations.ReusableSources.SET_TOOLS_BACK_WHEN_ITEM_CHANGED, Side.CLIENT));
