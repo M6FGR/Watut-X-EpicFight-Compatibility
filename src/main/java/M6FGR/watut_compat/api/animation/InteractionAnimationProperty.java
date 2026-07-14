@@ -2,7 +2,6 @@ package M6FGR.watut_compat.api.animation;
 
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Nullable;
-import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimationProperty;
 
 public class InteractionAnimationProperty<T> extends StaticAnimationProperty<T> {
@@ -12,6 +11,10 @@ public class InteractionAnimationProperty<T> extends StaticAnimationProperty<T> 
 
     public InteractionAnimationProperty(String name, @Nullable Codec<T> codecs) {
         super(name, codecs);
+    }
+
+    public InteractionAnimationProperty(String name) {
+        super(name, null);
     }
 
     public InteractionAnimationProperty() {

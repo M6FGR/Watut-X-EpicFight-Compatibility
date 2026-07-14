@@ -4,6 +4,9 @@ import M6FGR.watut_compat.api.animation.InteractionAnimationProperty;
 import M6FGR.watut_compat.api.animation.types.InteractionAnimation;
 import M6FGR.watut_compat.main.WatutCompat;
 import net.minecraft.util.Mth;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 import yesman.epicfight.api.animation.AnimationManager.AnimationBuilder;
 import yesman.epicfight.api.animation.AnimationManager.AnimationRegistryEvent;
@@ -16,14 +19,15 @@ import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimationProperty;
 import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.api.client.animation.Layer.Priority;
-import yesman.epicfight.api.client.animation.property.ClientAnimationProperties;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.QuaternionUtils;
 import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.gameasset.Armatures.ArmatureAccessor;
 import yesman.epicfight.model.armature.HumanoidArmature;
 
+@EventBusSubscriber(
+        modid = WatutCompat.MOD_ID
+)
 public class WatutAnimations {
 
     public static AnimationAccessor<InteractionAnimation> FOCUSED_GENERAL;
@@ -32,17 +36,16 @@ public class WatutAnimations {
     public static AnimationAccessor<InteractionAnimation> CHAT_TYPING;
 
 
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void registerAnimations(AnimationRegistryEvent event) {
-        event.newBuilder(WatutCompat.MODID, WatutAnimations::build);
+        event.newBuilder(WatutCompat.MOD_ID, WatutAnimations::build);
         WatutCompat.LOGGER.info("Registered Watut Compat Animations");
     }
 
     private static void build(AnimationBuilder builder) {
         ArmatureAccessor<HumanoidArmature> biped = Armatures.BIPED;
         FOCUSED_GENERAL = builder.nextAccessor(livingAnimation("focused_general"), accessor ->
-                new InteractionAnimation(0.15F, true, accessor, biped)
-                        .addProperty(StaticAnimationProperty.FIXED_HEAD_ROTATION, false)
-                        .addProperty(ClientAnimationProperties.PRIORITY, Priority.MIDDLE)
+                new InteractionAnimation(true, accessor, biped)
         );
         CHAT_TYPING = builder.nextAccessor(livingAnimation("chat_typing"), accessor ->
                 new InteractionAnimation(0.05F, accessor, biped)
@@ -53,7 +56,8 @@ public class WatutAnimations {
                         .addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, AnimationModifiers.FADE_ANIMATION_END)
         );
         IDLE_STATIC = builder.nextAccessor(livingAnimation("idling"), accessor ->
-                new InteractionAnimation(0.4F, accessor, biped)
+                new InteractionAnimation(0.45F, accessor, biped)
+
         );
     }
 
@@ -61,8 +65,6 @@ public class WatutAnimations {
         public static AnimationEvent.E1<AnimationAccessor<? extends StaticAnimation>> PLAY_ANIMATION = (entityPatch, accessor, params) -> {
             entityPatch.playAnimationSynchronized(params.first(), 0.0F);
         };
-
-
     }
 
     public static class AnimationModifiers {

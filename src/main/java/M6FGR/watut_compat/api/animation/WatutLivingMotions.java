@@ -4,7 +4,6 @@ import yesman.epicfight.api.animation.LivingMotion;
 
 public enum WatutLivingMotions implements LivingMotion {
     CHAT_TYPING,
-    CHAT_FOCUSED,
     TYPING,
     IDLING,
     PRESSING,
